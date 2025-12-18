@@ -11,7 +11,7 @@ func request(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("Listening on 8080")
+	fmt.Println("Listening on 8081")
 	http.HandleFunc("/points", request)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8081", nil)
 }
