@@ -53,6 +53,7 @@ func sendChunks(conn *websocket.Conn) {
 		
 		if !client.seen[cell.Origin] {
 			client.seen[cell.Origin] = true
+			fmt.Println(cell.GetAdjacentCells())
 			err = conn.WriteJSON(cell)
 			
 			if err != nil {
@@ -62,15 +63,6 @@ func sendChunks(conn *websocket.Conn) {
 			}
 		}
 	}
-	//out, err := json.Marshal(world.GetNearestCell(d.GetPoint()))
-	
-	//if err != nil {
-	//	fmt.Println("error parsing json")
-	//	return
-	//}
-	
-	//w.Header().Set("Content-Type", "application/json")
-	//w.Write([]byte(string(out)))
 }
 
 func handler (w http.ResponseWriter, r *http.Request) {
