@@ -30,10 +30,6 @@ type Data struct {
 	Y float64 `json:"y"`
 }
 
-func (data Data) GetPoint() atlas.Point {
-	return atlas.NewPoint(float64(data.X), float64(data.Y))
-}
-
 func sendChunks(conn *websocket.Conn) {
 	client := Client{
 		seen: make(map[atlas.Point]bool),
@@ -49,7 +45,10 @@ func sendChunks(conn *websocket.Conn) {
 			return
 		}
 		
-		cell := world.GetNearestCell(atlas.NewPoint(json.X, json.Y))
+		cell := world.GetNearestCell(atlas.Point{
+			json.X,
+			json.Y,
+		})
 		
 		if !client.seen[cell.Origin] {
 			client.seen[cell.Origin] = true
@@ -76,7 +75,7 @@ func handler (w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	world = atlas.GenerateWorld(100)
+	world = atlas.GenerateWorld(200)
 	
 	fmt.Println("Listening on 8082")
 	http.HandleFunc("/atlas", handler)
