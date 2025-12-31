@@ -9,31 +9,31 @@ import (
 type Modifier func(*Cell)
 
 func (world *World) Infect(biomes []Biome, decay float64) {
-	
+
 	// Get "patient 0"
 	idx := world.rnd.Int() % len(world.Cells)
 	origin := world.Cells[idx]
-	
+
 	// Keep track of who to infect
-	changedCells := []*Cell{}
+	var changedCells []*Cell
 	seen := make(map[*Cell]bool)
 	queue := []*Cell{
 		origin,
 	}
-	
+
 	// Keep track of biome
 	biomeCount := len(biomes)
 	currentBiome := float64(biomeCount)
 	convertBiome := func() int8 {
 		return int8(math.Floor(currentBiome))
 	}
-	
+
 	// Infect
 	for len(queue) > 0 {
 		currentBiome -= decay
 		currentBiome = math.Max(0, currentBiome)
-		temp := []*Cell{}
-		
+		var temp []*Cell
+
 		for _, cell := range queue {
 			// Assign biome to current cell
 			biomeInt8 := convertBiome()
@@ -41,7 +41,7 @@ func (world *World) Infect(biomes []Biome, decay float64) {
 				changedCells = append(changedCells, cell)
 				cell.biome = biomeInt8
 			}
-			
+
 			// Infect adjacent cells
 			for _, adj := range cell.GetAdjacentCells() {
 				if !seen[adj] {
@@ -50,10 +50,10 @@ func (world *World) Infect(biomes []Biome, decay float64) {
 				}
 			}
 		}
-		
+
 		queue = temp
 	}
-	
+
 	// Now that biomes are assigned use the biome modifiers on each cell
 	wg := &sync.WaitGroup{}
 	wg.Add(len(changedCells))
@@ -71,8 +71,6 @@ func (world *World) Infect(biomes []Biome, decay float64) {
 	wg.Wait()
 }
 
-
-
 // Modifiers
 
 func NewFill(value int8) Modifier {
@@ -86,35 +84,35 @@ func NewFill(value int8) Modifier {
 
 func NewCropCircle(angles float64, values ...int8) Modifier {
 	valuesLength := float64(len(values))
-	
+
 	getValue := func(pt Point, angle float64) float64 {
 		angledX := math.Cos(angle) * pt.X
 		angledY := math.Sin(angle) * pt.Y
 		return math.Cos(angledX + angledY)
 	}
-	
+
 	quasiCrystal := func(pt Point) int8 {
 		var value float64
 		angle := 2.0 * 3.14156
 		delta := angle / angles
-		
+
 		for i := 0; float64(i) < angles; i++ {
 			value += getValue(pt, angle)
 			angle -= delta
 		}
-		
+
 		tileVal := value / angles
 		tileVal += 1.0
 		tileVal /= 2.0
 		//Now tileval is between 0 and 1
 		tileVal *= valuesLength
-		
-		return values[int(math.Max(0, math.Floor(tileVal))) % len(values)]
+
+		return values[int(math.Max(0, math.Floor(tileVal)))%len(values)]
 	}
-	
+
 	return func(cell *Cell) {
 		origin := cell.Origin
-		
+
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
 			tile.Value = quasiCrystal(tile.point().subtract(origin))
@@ -124,32 +122,32 @@ func NewCropCircle(angles float64, values ...int8) Modifier {
 
 func NewPattern(angles float64, values ...int8) Modifier {
 	valuesLength := float64(len(values))
-	
+
 	getValue := func(pt Point, angle float64) float64 {
 		angledX := math.Cos(angle) * pt.X
 		angledY := math.Sin(angle) * pt.Y
 		return math.Cos(angledX + angledY)
 	}
-	
+
 	quasiCrystal := func(pt Point) int8 {
 		var value float64
 		angle := 2.0 * 3.14156
 		delta := angle / angles
-		
+
 		for i := 0; float64(i) < angles; i++ {
 			value += getValue(pt, angle)
 			angle -= delta
 		}
-		
+
 		tileVal := value / angles
 		tileVal += 1.0
 		tileVal /= 2.0
 		//Now tileval is between 0 and 1
 		tileVal *= valuesLength
-		
-		return values[int(math.Max(0, math.Floor(tileVal))) % len(values)]
+
+		return values[int(math.Max(0, math.Floor(tileVal)))%len(values)]
 	}
-	
+
 	return func(cell *Cell) {
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
@@ -158,20 +156,20 @@ func NewPattern(angles float64, values ...int8) Modifier {
 	}
 }
 
-func NewVoronoi(density int, values ...int8) Modifier {	
+func NewVoronoi(density int, values ...int8) Modifier {
 	return func(cell *Cell) {
 		rnd := rand.New(rand.NewSource(int64(density)))
-		origins := []Point{}
+		var origins []Point
 		getPoint := func() Point {
-			return cell.Tiles[rnd.Int() % len(cell.Tiles)].point()
+			return cell.Tiles[rnd.Int()%len(cell.Tiles)].point()
 		}
 		getValue := func(seed int) int8 {
-			return values[seed % len(values)]
+			return values[seed%len(values)]
 		}
 		findNearest := func(pt Point) int8 {
 			nearest := origins[0]
 			nearestDist := distance(nearest, pt)
-			
+
 			for idx := range origins {
 				origin := origins[idx]
 				originDist := distance(origin, pt)
@@ -180,15 +178,15 @@ func NewVoronoi(density int, values ...int8) Modifier {
 					nearestDist = originDist
 				}
 			}
-			
+
 			return getValue(int(nearest.X + nearest.Y))
 		}
-		
+
 		for idx := 0; idx < density; idx++ {
 			pt := getPoint()
 			origins = append(origins, pt)
 		}
-		
+
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
 			tile.Value = findNearest(tile.point())
@@ -202,23 +200,23 @@ func NewBorder(border int8) Modifier {
 			x := tile.X
 			y := tile.Y
 			adj := [4]Point{
-				newPoint(x - 1, y),
-				newPoint(x + 1, y),
-				newPoint(x, y + 1),
-				newPoint(x, y - 1),
+				newPoint(x-1, y),
+				newPoint(x+1, y),
+				newPoint(x, y+1),
+				newPoint(x, y-1),
 			}
 			for _, pt := range adj {
 				if cell.grid[pt] == nil {
 					return true
 				}
 			}
-			
+
 			return false
 		}
-		
+
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
-			
+
 			if isBorder(cell, tile) {
 				tile.Value = border
 			}
@@ -226,70 +224,70 @@ func NewBorder(border int8) Modifier {
 	}
 }
 
-func NewSelectiveBorder(border int8, around int8,) Modifier {
+func NewSelectiveBorder(border int8, around int8, ) Modifier {
 	return func(cell *Cell) {
 		isBorder := func(cell *Cell, tile *Tile) bool {
 			x := tile.X
 			y := tile.Y
 			adj := [4]Point{
-				newPoint(x - 1, y),
-				newPoint(x + 1, y),
-				newPoint(x, y + 1),
-				newPoint(x, y - 1),
+				newPoint(x-1, y),
+				newPoint(x+1, y),
+				newPoint(x, y+1),
+				newPoint(x, y-1),
 			}
 			for _, pt := range adj {
 				if cell.grid[pt] == nil || cell.grid[pt].Value != around {
 					return true
 				}
 			}
-			
+
 			return false
 		}
-		
-		toChange := []*Tile{}
+
+		var toChange []*Tile
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
-			
+
 			if tile.Value == around && isBorder(cell, tile) {
 				toChange = append(toChange, tile)
 			}
 		}
-		
+
 		for _, tile := range toChange {
 			tile.Value = border
 		}
 	}
 }
 
-func NewSelectiveExternalBorder(border int8, around int8,) Modifier {
+func NewSelectiveExternalBorder(border int8, around int8, ) Modifier {
 	return func(cell *Cell) {
 		isBorder := func(cell *Cell, tile *Tile) bool {
 			x := tile.X
 			y := tile.Y
 			adj := [4]Point{
-				newPoint(x - 1, y),
-				newPoint(x + 1, y),
-				newPoint(x, y + 1),
-				newPoint(x, y - 1),
+				newPoint(x-1, y),
+				newPoint(x+1, y),
+				newPoint(x, y+1),
+				newPoint(x, y-1),
 			}
 			for _, pt := range adj {
 				if cell.grid[pt] != nil && cell.grid[pt].Value == around {
 					return true
 				}
 			}
-			
+
 			return false
 		}
-		
-		toChange := []*Tile{}
+
+		var toChange []*Tile
 		for idx := range cell.Tiles {
 			tile := &(cell.Tiles[idx])
-			
+
 			if tile.Value != around && isBorder(cell, tile) {
 				toChange = append(toChange, tile)
 			}
 		}
-		
+
 		for _, tile := range toChange {
 			tile.Value = border
 		}

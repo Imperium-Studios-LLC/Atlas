@@ -6,22 +6,22 @@ import (
 
 type Cell struct {
 	vertices []Vertex
-	biome int8
-	
+	biome    int8
+
 	Origin Point
-	Tiles []Tile `json:"tiles"`
-	
+	Tiles  []Tile `json:"tiles"`
+
 	grid map[Point]*Tile
-	mu sync.Mutex
+	mu   sync.Mutex
 }
 
 func NewCell(origin Point) *Cell {
 	return &Cell{
-		biome: 0,
+		biome:    0,
 		vertices: []Vertex{},
-		Origin: origin,
-		Tiles: []Tile{},
-		grid: make(map[Point]*Tile),					
+		Origin:   origin,
+		Tiles:    []Tile{},
+		grid:     make(map[Point]*Tile),
 	}
 }
 
@@ -38,7 +38,8 @@ func (cell *Cell) addTile(tile Tile) {
 func (cell *Cell) GetAdjacentCells() []*Cell {
 	seen := make(map[Point]bool)
 	seen[cell.Origin] = true
-	cells := []*Cell{}
+
+	var cells []*Cell
 	for _, vertex := range cell.vertices {
 		for _, adjacentCell := range vertex.cells {
 			if !seen[adjacentCell.Origin] {

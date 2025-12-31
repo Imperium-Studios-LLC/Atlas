@@ -1,3 +1,5 @@
+package atlas
+
 type Biome struct {
 	modifiers []Modifier
 }
