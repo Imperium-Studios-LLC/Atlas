@@ -1,4 +1,4 @@
-module github.com/Imperium-Studios-LLC/atlas
+module github.com/studio-imperium/atlas
 
 go 1.25.1
 

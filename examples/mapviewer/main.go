@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Imperium-Studios-LLC/atlas"
 	"github.com/gorilla/websocket"
+	"github.com/studio-imperium/atlas"
 )
 
 var world *atlas.World
