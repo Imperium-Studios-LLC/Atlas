@@ -44,12 +44,14 @@ Say you want to generate a 100x100 world which has every tile as 0:
 world := NewTemplateWorld(100)
 
 Now, if you want to make all the tiles have a value of 1:
+
     flatMap := []Biome{
         NewBiome(NewFill(1))
     }
     world.Infect(flatMap, 0)
 
 Say instead you want some with a value of 1 and some with a value of 0 in polygons:
+
     flatMap := []Biome{
         NewBiome(NewVoronoi(10, 0,1))
     }
