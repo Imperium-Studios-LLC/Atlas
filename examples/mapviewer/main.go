@@ -127,27 +127,20 @@ var IslandMap []atlas.Biome = []atlas.Biome{
 
 var DesertMountainsMap []atlas.Biome = []atlas.Biome{
 	atlas.NewBiome(
-		atlas.NewPattern(27, RUBBLE, SNOW),
-		atlas.NewSelectiveBorder(SNOW, ICE),
-		atlas.NewSelectiveBorder(DARKSTONE, RUBBLE),
-		atlas.NewBorder(ICE),
-		atlas.NewSelectiveExternalBorder(SNOW, ICE),
+		atlas.NewCropCircle(20, WATER, GRASS),
+		atlas.NewSelectiveBorder(STONE, WATER),
 	),
 	atlas.NewBiome(
-		atlas.NewVoronoi(40, RUBBLE, DARKSTONE, DARKSTONE, SNOW, ICE),
-		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
-		atlas.NewSelectiveBorder(SNOW, ICE),
-		atlas.NewBorder(SNOW),
+		atlas.NewPattern(3.2, GRASS, STONE),
+		atlas.NewBorder(STONE),
 	),
 	atlas.NewBiome(
-		atlas.NewVoronoi(40, RUBBLE, RUBBLE, DARKSTONE, DARKSTONE, DARKSTONE, DARKSTONE, DARKSTONE, SNOW),
-		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
-		atlas.NewBorder(SNOW),
+		atlas.NewPattern(5, DRYGRASS, SAND),
+		atlas.NewSelectiveBorder(SANDSTONE, SAND),
 	),
 	atlas.NewBiome(
-		atlas.NewVoronoi(40, RUBBLE, RUBBLE, DARKSTONE, DARKSTONE, SNOW),
-		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
-		atlas.NewBorder(DARKSTONE),
+		atlas.NewVoronoi(40, SAND, SANDSTONE, DRYGRASS),
+		atlas.NewSelectiveBorder(SANDSTONE, DRYGRASS),
 	),
 	atlas.NewBiome(
 		atlas.NewCropCircle(40, DRYGRASS, SAND),
@@ -158,20 +151,37 @@ var DesertMountainsMap []atlas.Biome = []atlas.Biome{
 		atlas.NewSelectiveBorder(SANDSTONE, SAND),
 	),
 	atlas.NewBiome(
-		atlas.NewVoronoi(40, SAND, SANDSTONE, DRYGRASS),
-		atlas.NewSelectiveBorder(SANDSTONE, DRYGRASS),
+		atlas.NewVoronoi(40, RUBBLE, RUBBLE, DARKSTONE, DARKSTONE, SNOW),
+		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
+		atlas.NewBorder(DARKSTONE),
 	),
 	atlas.NewBiome(
-		atlas.NewPattern(5, DRYGRASS, SAND),
-		atlas.NewSelectiveBorder(SANDSTONE, SAND),
+		atlas.NewVoronoi(40, RUBBLE, RUBBLE, DARKSTONE, DARKSTONE, DARKSTONE, DARKSTONE, DARKSTONE, SNOW),
+		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
+		atlas.NewBorder(SNOW),
 	),
 	atlas.NewBiome(
-		atlas.NewPattern(3.2, GRASS, STONE),
-		atlas.NewBorder(STONE),
+		atlas.NewVoronoi(40, RUBBLE, DARKSTONE, DARKSTONE, SNOW, ICE),
+		atlas.NewSelectiveBorder(DARKSTONE, SNOW),
+		atlas.NewSelectiveBorder(SNOW, ICE),
+		atlas.NewBorder(SNOW),
 	),
 	atlas.NewBiome(
-		atlas.NewCropCircle(20, WATER, GRASS),
-		atlas.NewSelectiveBorder(STONE, WATER),
+		atlas.NewPattern(27, RUBBLE, SNOW),
+		atlas.NewSelectiveBorder(SNOW, ICE),
+		atlas.NewSelectiveBorder(DARKSTONE, RUBBLE),
+		atlas.NewBorder(ICE),
+		atlas.NewSelectiveExternalBorder(SNOW, ICE),
+	),
+	atlas.NewBiome(
+		atlas.NewPattern(27, ICE, WATER),
+		atlas.NewSelectiveBorder(WATER, ICE),
+	),
+	atlas.NewBiome(
+		atlas.NewFill(WATER),
+	),
+	atlas.NewBiome(
+		atlas.NewFill(DEEPWATER),
 	),
 }
 
