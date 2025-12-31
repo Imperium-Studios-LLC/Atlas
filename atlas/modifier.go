@@ -224,7 +224,7 @@ func NewBorder(border int8) Modifier {
 	}
 }
 
-func NewSelectiveBorder(border int8, around int8, ) Modifier {
+func NewSelectiveBorder(border int8, around int8) Modifier {
 	return func(cell *Cell) {
 		isBorder := func(cell *Cell, tile *Tile) bool {
 			x := tile.X
@@ -259,7 +259,7 @@ func NewSelectiveBorder(border int8, around int8, ) Modifier {
 	}
 }
 
-func NewSelectiveExternalBorder(border int8, around int8, ) Modifier {
+func NewSelectiveExternalBorder(border int8, around int8) Modifier {
 	return func(cell *Cell) {
 		isBorder := func(cell *Cell, tile *Tile) bool {
 			x := tile.X
