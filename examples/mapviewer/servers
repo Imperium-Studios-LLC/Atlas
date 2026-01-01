@@ -1,0 +1,54 @@
+server {
+	listen 1000;
+	root /var/www/mapviewer;
+	index world1.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+server {
+	listen 2000;
+	root /var/www/mapviewer;
+	index world2.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+server {
+	listen 3000;
+	root /var/www/mapviewer;
+	index world3.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+server {
+	listen 4000;
+	root /var/www/mapviewer;
+	index world4.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+server {
+	listen 5000;
+	root /var/www/mapviewer;
+	index world5.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}
+server {
+	listen 6001;
+	root /var/www/mapviewer;
+	index world6.html;
+	
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}

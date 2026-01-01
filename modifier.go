@@ -14,24 +14,27 @@ func (world *World) Infect(biomes []Biome, decay float64) {
 	idx := world.rnd.Int() % len(world.Cells)
 	origin := world.Cells[idx]
 
-	// Keep track of who to infect
+	// Keep track of whom to infect
 	var changedCells []*Cell
 	seen := make(map[*Cell]bool)
+	seen[origin] = true
 	queue := []*Cell{
 		origin,
 	}
 
 	// Keep track of biome
-	biomeCount := len(biomes)
-	currentBiome := float64(biomeCount)
+	maxBiome := len(biomes) - 1
+	currentBiome := 0.0
 	convertBiome := func() int8 {
+		if int(currentBiome) > maxBiome {
+			return int8(maxBiome)
+		}
 		return int8(math.Floor(currentBiome))
 	}
 
 	// Infect
 	for len(queue) > 0 {
-		currentBiome -= decay
-		currentBiome = math.Max(0, currentBiome)
+		currentBiome += decay
 		var temp []*Cell
 
 		for _, cell := range queue {
